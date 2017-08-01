@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
+
+    <title>se-datalist test</title>
+
+    <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
+    <script src="../../web-component-tester/browser.js"></script>
+
+    <link rel="import" href="../se-datalist.html">
+  </head>
+  <body>
+
+    <test-fixture id="DeclarativePropertySetFixture">
+      <template>
+        <se-datalist placeholder="Choose an option" disabled="true"></se-datalist>
+      </template>
+    </test-fixture>
+
+    <test-fixture id="ImperativePropertySetFixture">
+      <template>
+        <se-datalist></se-datalist>
+      </template>
+    </test-fixture>
+
+    <test-fixture id="SelectedOptionFixture">
+      <template>
+        <se-datalist placeholder="Select an option"></se-datalist>
+      </template>
+    </test-fixture>
+
+    <test-fixture id="ListManipulationFixture">
+      <template>
+        <se-datalist></se-datalist>
+      </template>
+    </test-fixture>
+
+    <script>
+      suite('se-datalist', function() {
+
+        test('use of declarative syntax for element properties', function() {
+          let element = fixture('DeclarativePropertySetFixture');
+          element.addOptions(['First option', 'Second option', 'Third option']);
+          assert.sameMembers(element.list, ['First option', 'Second option', 'Third option']);
+          assert.equal(element.placeholder, 'Choose an option');
+          assert.equal(element.disabled, true);
+        });
+
+        test('use of imperative syntax for element properties', function() {
+          let element = fixture('ImperativePropertySetFixture');
+          element.addOptions(['First option', 'Second option', 'Third option']);
+          element.selectedOption = 'First option';
+          element.disabled = true;
+          element.placeholder = 'Choose an option';
+          assert.sameMembers(element.list, ['First option', 'Second option', 'Third option']);
+          assert.equal(element.selectedOption, 'First option');
+          assert.equal(element.disabled, true);
+          assert.equal(element.placeholder, 'Choose an option');
+        });
+
+        test('selected option testing', function() {
+          let element = fixture('SelectedOptionFixture');
+          element.selectedOption = 'Unknown';
+          assert.equal(element.selectedOption, '', 'Set of selected option without existing list');
+          assert.equal(element._element.value, '', 'Set of selected option without existing list');
+          element.addOptions(['One', 'Two']);
+          element.selectedOption = 'Two';
+          assert.equal(element.selectedOption, 'Two', 'Initial selected option check');
+          assert.equal(element._element.value, 'Two', 'Initial value check');
+          element.selectedOption = 'Three';
+          assert.equal(element.selectedOption, 'Two', 'Check of wrong option set');
+          assert.equal(element._element.value, 'Two');
+          element.selectedOption = 'Two';
+          assert.equal(element.selectedOption, 'Two');
+          assert.equal(element._element.value, 'Two');
+          element.removeAllOptions();
+          assert.equal(element.selectedOption, '', 'Check for empty selected after list clear');
+          assert.equal(element._element.value, '');
+          element.addOptions(['1', '2']);
+          assert.equal(element.selectedOption, '', 'option list switched');
+          assert.equal(element._element.value, '');
+          element.selectedOption = '2';
+          assert.equal(element.selectedOption, '2', 'option selected from new list');
+          assert.equal(element._element.value, '2');
+          element.removeAllOptions();
+          assert.equal(element.selectedOption, '', 'empty list set tested');
+          assert.equal(element._element.value, '');
+        });
+
+        test('manipulating of options list', function() {
+          let element = fixture('ListManipulationFixture');
+          element.addOptions(['First option', 'Second option', 'Third option']);
+          element.selectedOption = 'First option';
+          assert.sameMembers(element.list, ['First option', 'Second option', 'Third option'], 'check normally contructed list and normally selected option');
+          assert.equal(element.selectedOption, 'First option', 'check normally contructed list and normally selected option');
+          assert.equal(element._element.value, 'First option', 'check normally contructed list and normally selected option');
+          element.addOptions(['Fifth option']);
+          assert.sameMembers(element.list, ['First option', 'Second option', 'Third option', 'Fifth option'], 'check updated list');
+          element.selectedOption = 'Fifth option';
+          assert.equal(element.selectedOption, 'Fifth option', 'check updated selected option - 1');
+          assert.equal(element._element.value, 'Fifth option', 'check updated selected option - 1');
+          element.selectedOption = 'Second option';
+          assert.equal(element.selectedOption, 'Second option', 'check updated selected option - 2');
+          assert.equal(element._element.value, 'Second option', 'check updated selected option - 2');
+          element.removeOptions(['Second option']);
+          assert.equal(element.selectedOption, 'First option', 'check new selected option if old selected option was removed from list - 1');
+          assert.equal(element._element.value, 'First option', 'check new selected option if old selected option was removed from list - 1');
+          assert.sameMembers(element.list, ['First option', 'Third option', 'Fifth option'], 'check option removal - 1');
+          element.removeOptions(['First option']);
+          assert.sameMembers(element.list, ['Third option', 'Fifth option'], 'check option removal - 2');
+          assert.equal(element.selectedOption, 'Third option', 'check new selected option if old selected option was removed from list - 2');
+          assert.equal(element._element.value, 'Third option', 'check new selected option if old selected option was removed from list - 2');
+          element.list = [];
+          assert.sameMembers(element.list, ['Third option', 'Fifth option'], 'testing list property readOnly');
+          assert.equal(element.selectedOption, 'Third option', 'testing list property readOnly');
+          assert.equal(element._element.value, 'Third option', 'testing list property readOnly');
+          element.addOptions(['Third option', 'aaa']);
+          assert.sameMembers(element.list, ['Third option', 'Fifth option', 'aaa'], "Already existed in list option shouldn't duplicate");
+        });
+      });
+    </script>
+
+  </body>
+</html>

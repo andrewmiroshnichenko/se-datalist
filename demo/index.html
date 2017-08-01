@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
+
+    <title>se-datalist demo</title>
+
+    <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
+
+    <link rel="import" href="../../iron-demo-helpers/demo-pages-shared-styles.html">
+    <link rel="import" href="../../iron-demo-helpers/demo-snippet.html">
+    <link rel="import" href="../se-datalist.html">
+
+    <custom-style>
+      <style is="custom-style" include="demo-pages-shared-styles">
+      </style>
+    </custom-style>
+    <style>
+      se-datalist {
+        width: 200px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="vertical-section-container centered">
+      <h3>Basic se-datalist demo</h3>
+      <demo-snippet>
+        <template>
+        <se-datalist is-select></se-datalist>
+        </template>
+      </demo-snippet>
+    </div>
+    <script>
+      var customEl = document.querySelector('se-datalist');
+      customEl.addOptions(['First option', 'Second option', 'Third option']);
+    // setTimeout(function() {
+      
+    //   console.log(customEl);
+    //   setTimeout(function() {
+    //     customEl.selectedOption = 'Second option';
+    //   }, 1000);
+    //   setTimeout(function() {
+    //     customEl.removeOptions(['Second option']);
+    //     alert(customEl.selectedOption);
+    //   }, 2000);
+    //   setTimeout(function() {
+    //     customEl.selectedOption = 'Secooption';
+    //     alert(customEl.selectedOption);
+    //   }, 3000);
+    //   setTimeout(function() {
+    //     customEl.removeAllOptions();
+    //     alert(customEl.selectedOption);
+    //   }, 4000);
+    // }, 0);
+
+    </script>
+  </body>
+</html>

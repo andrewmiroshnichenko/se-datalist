@@ -1,0 +1,22 @@
+{
+  "name": "se-datalist",
+  "description": "Polymer wrapper around datalist and select tags with browser-dependent appearance",
+  "main": "se-datalist.html",
+  "dependencies": {
+    "polymer": "Polymer/polymer#^2.0.0"
+  },
+  "keywords": ["datalist", "web-components", "polymer"],
+  "license": "Apache 2",
+  "devDependencies": {
+    "iron-demo-helpers": "PolymerElements/iron-demo-helpers#^2.0.0",
+    "web-component-tester": "Polymer/web-component-tester#^6.0.0",
+    "webcomponentsjs": "webcomponents/webcomponentsjs#^1.0.0"
+  },
+  "resolutions": {
+    "polymer": "^2.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/andrewmiroshnichenko/se-datalist.git"
+  }
+}

@@ -1,0 +1,261 @@
+<link rel="import" href="../polymer/polymer-element.html">
+
+<dom-module id="se-datalist">
+  <template>
+    <style>
+      :host {
+        display: block;
+      }
+      * {
+        padding: 0;
+        margin: 0;
+        box-sizing: border-box;
+        border-radius: 0;
+        background: none;
+        border: 0;
+        outline: 0;
+      }
+      .wrapper {
+        display: block;
+        position: relative;
+        height: 72px;
+        padding: 28px 0 16px;
+      }
+      .datalist {
+        padding-left: 10px;
+        border-bottom: border-bottom: var(--input-border);
+        font: 16px/30px 'Roboto', sans-serif;
+        float: left;
+        width: 100%;
+        border-bottom: 1px solid rgba(0, 0, 0, .12);
+      }
+      select.datalist {
+        cursor: pointer;
+      }
+      .datalist-label {
+        position: absolute;
+        font: 16px/30px 'Roboto', sans-serif;
+        top: 28px;
+        left: 9px;
+        color: #999999;
+        transition: top .25s, font .25s;
+        cursor: text; /*Is needed for label of project name input label*/
+      }
+      .animate-placeholder-out {
+        top: 10px;
+        left: 0px;
+        transform: translateX(0);
+        font: 12px/12px 'Roboto';
+      }
+      .none {
+        display: none;
+      }
+    </style>
+    <div class="wrapper">
+      <div class="none"><slot></slot></div>
+      <label for="input-id" class="datalist-label" disabled=[[disabled]]>[[_formattedPlaceholder]]</label>
+      <select class="datalist"></select>
+      <div class="datalist-wrapper">
+        <input class="datalist" id="input-id" list="datalist-id" type="text" name="" disabled=[[disabled]]>
+        <datalist class="none" id="datalist-id"></datalist>
+      </div>
+    </div>
+  </template>
+
+  <script>
+    /**
+     * `se-datalist`
+     * 
+     *
+     * @customElement
+     * @polymer
+     * @demo demo/index.html
+     */
+    class SeDatalist extends Polymer.Element {
+      static get is() { return 'se-datalist'; }
+      static get properties() {
+        return {
+          placeholder: {
+            type: String,
+            reflectToAttribute: true,
+            observer: '_placeholderObserver'
+          },
+          disabled: {
+            type: Boolean,
+            reflectToAttribute: true,
+            value: false
+          },
+          list: {
+            type: Array,
+            value: [],
+            readOnly: true
+          },
+          selectedOption: {
+            type: String,
+            observer: '_selectedOptionObserver',
+            reflectToAttribute: true,
+            value: ''
+          },
+          isSelect: {
+            type: Boolean,
+            value: false,
+            reflectToAttribute: true
+          },
+          _element: {
+            type: Object
+          },
+          _optionsParentElement: {
+            type: Object
+          },
+          _inputValue: {
+            type: String,
+            observer: '_moveLabelObserver'
+          },
+          _label: {
+            type: Object
+          },
+          _formattedPlaceholder: {
+            type: String,
+            value: ''
+          }
+        };
+      }
+      static get observers() {
+        return [
+          '_listAndSelectedOptionObserver(list.splices, selectedOption)',
+          '_listAndElementObserver(list.splices, _optionsParentElement)',
+        ];
+      }
+      constructor() {
+        super();
+        this._boundHandleElementChange = this._handleElementChange.bind(this);
+        this._boundSetInputValueProp = this._setInputValueProp.bind(this);
+      }
+      ready() {
+        super.ready();
+        let isDatalistAvailable = Object.prototype.toString.call(document.createElement('datalist')) === '[object HTMLDataListElement]';
+        let shadow = this.shadowRoot;
+        let inputWrapper = shadow.querySelector('.datalist-wrapper');
+        let input = shadow.querySelector('input');
+        let select = shadow.querySelector('select');
+        if (isDatalistAvailable && !this.isSelect) {
+          this._element = input;
+          this._optionsParentElement = shadow.querySelector('datalist');
+          select.classList.add('none');
+        } else {
+          this._element = select;
+          this._optionsParentElement = select;
+          input.classList.add('none');
+        }
+        this._label = shadow.querySelector('.datalist-label');
+      }
+      connectedCallback() {
+        super.connectedCallback();
+        this._element.addEventListener('change', this._boundHandleElementChange);
+        this._element.addEventListener('input', this._boundSetInputValueProp);
+      }
+      disconnectedCallback() {
+        super.disconnectedCallback();
+        this._element.removeEventListener('change', this._boundHandleElementChange);
+        this._element.removeEventListener('input', this._boundSetInputValueProp);
+      }
+      addOptions(optionsArray) {
+        optionsArray.forEach(function(option) {
+          let index = this.list.indexOf(option);
+          if (index === -1) {
+            this.push('list', option);
+          } else {
+            return false;
+          }
+        }.bind(this));
+      }
+      removeOptions(optionsArray) {
+        optionsArray.forEach(function(option) {
+          let index = this.list.indexOf(option);
+          if (index !== -1) {
+            this.splice('list', index, 1);
+          } else {
+            return false;
+          }
+          if (this.list.length && this.selectedOption === option) {
+            this.selectedOption = this.list[0];
+            this._boundSetInputValueProp({target: {value: this.list[0]}});
+          } else if (!this.list.length && this.selectedOption === option) {
+            this.selectedOption = '';
+            this._boundSetInputValueProp({target: {value: ''}});
+          }
+        }.bind(this));
+      }
+      removeAllOptions() {
+        while (this.list.length) {
+          this.removeOptions([this.list[0]]);
+        }
+      }
+      _setInputValueProp(e) {
+        if (!this._element) return;
+        this._inputValue = e.target.value;
+        this._element.value = e.target.value;
+      }
+      _createOption(optionText, selected) {
+        if (selected) {
+          return '<option selected="true">' + optionText + '</option>';
+        } else {
+          return '<option>' + optionText + '</option>';
+        }
+      }
+      _handleElementChange(e) {
+        this._boundSetInputValueProp({target: {value: e.target.value}});
+      }
+      _selectedOptionObserver(newValue, oldValue) {
+        if (~this.list.indexOf(newValue)) {
+          this.list = this.list;
+          this._boundSetInputValueProp({target: {value: newValue}});
+        } else if (!~this.list.indexOf(newValue) && ~this.list.indexOf(oldValue)) {
+          this.selectedOption = oldValue;
+          this._boundSetInputValueProp({target: {value: oldValue}});
+        } else if (!~this.list.indexOf(newValue) && !~this.list.indexOf(oldValue)) {
+          this.selectedOption = '';
+          this._boundSetInputValueProp({target: {value: ''}});
+        }
+      }
+      _listAndSelectedOptionObserver(list, selectedOption) {
+        if (this.list && this.list.length) {
+          this._boundSetInputValueProp({target: {value: selectedOption}});
+        } else if (this.list && !this.list.length) {
+          this.selectedOption = '';
+          this._boundSetInputValueProp({target: {value: ''}});
+        }
+      }
+      _listAndElementObserver(list, element) {
+        // TODO Probably more convenient is to use list instead of this.list
+        if (!element) return;
+
+        this._optionsParentElement.innerHTML = '';
+        let selectedIndex = this.list.indexOf(this.selectedOption);
+        let optionsHTML = '';
+        for (let i = 0; i < this.list.length; i++) {
+          let isSelected;
+          if (i === selectedIndex) {
+            isSelected = true;
+          } else {
+            isSelected = false;
+          }
+          optionsHTML += this._createOption(this.list[i], isSelected);
+        }
+        this._optionsParentElement.innerHTML = optionsHTML;
+      }
+      _placeholderObserver(newValue) {
+        let formattedValue = newValue.substr(0, 20);
+        this._formattedPlaceholder = formattedValue;
+      }
+      _moveLabelObserver(newValue, oldValue) {
+        if (!oldValue && newValue) {
+          this._label.classList.add('animate-placeholder-out');
+        } else if (oldValue && !newValue) {
+          this._label.classList.remove('animate-placeholder-out');
+        }
+      }
+    }
+    window.customElements.define(SeDatalist.is, SeDatalist);
+  </script>
+</dom-module>
