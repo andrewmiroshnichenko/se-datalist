@@ -176,3 +176,14 @@ Completely removes all options from the component’s `list` property.
       customEl.removeAllOptions();
       customEl.list; // returns Array []
 ```
+## Styling
+
+The following custom properties are available for styling:
+
+| Custom property                  | Description                                                         | Default                        |
+| ---                              | ---                                                                 | ---                            |
+| `--sedatalist-text-color`        | Color of datalist's displayed value                                 | Browser-default(black)         |
+| `--sedatalist-bottom-line`       | Style of component’s bottom line. Other borders are disabled        | `1px solid rgba(0, 0, 0, .12)` |
+| `--sedatalist-placeholder-color` | Color of placeholder text                                           | `#999999`                      |
+| `--sedatalist-font-size`         | Charachters font size. Component dimesions will scale accordingly   | `16px`                         |
+| `--sedatalist-font-family`       | Font family of component typography                                 | `Roboto, sans-serif`           |

@@ -16,36 +16,53 @@
         outline: 0;
       }
       .wrapper {
+        --font-size-ratio: calc(var(--sedatalist-font-size, 16px) / 16);
+        height: 72px;
+        height: calc(72 * var(--font-size-ratio));
+        padding: 28px 0 16px;
+        padding: calc(28 * var(--font-size-ratio)) auto calc(16 * var(--font-size-ratio));
         display: block;
         position: relative;
-        height: 72px;
-        padding: 28px 0 16px;
       }
       .datalist {
         padding-left: 10px;
-        border-bottom: border-bottom: var(--input-border);
+        padding-left: calc(10 * var(--font-size-ratio));
         font: 16px/30px 'Roboto', sans-serif;
+        font-size: var(--sedatalist-font-size, 16px);
+        line-height: calc(2 * var(--sedatalist-font-size, 16px));
+        font-family: var(--sedatalist-font-family, 'Roboto', sans-serif);
+        border-bottom: 1px solid rgba(0, 0, 0, .12);
+        border-bottom: var(--sedatalist-bottom-line, 1px solid rgba(0, 0, 0, .12));
         float: left;
         width: 100%;
-        border-bottom: 1px solid rgba(0, 0, 0, .12);
+        color: var(--sedatalist-text-color, black);
       }
       select.datalist {
         cursor: pointer;
       }
       .datalist-label {
-        position: absolute;
         font: 16px/30px 'Roboto', sans-serif;
-        top: 28px;
+        font-size: var(--sedatalist-font-size, 16px);
+        line-height: calc(2 * var(--sedatalist-font-size, 16px));
+        font-family: var(--sedatalist-font-family, 'Roboto', sans-serif);
+        top: 0;
         left: 9px;
+        left: calc(9 * var(--font-size-ratio));
         color: #999999;
-        transition: top .25s, font .25s;
+        color: var(--sedatalist-placeholder-color, #999999);
+        transition: all .25s;
+        position: absolute;
         cursor: text; /*Is needed for label of project name input label*/
       }
       .animate-placeholder-out {
         top: 10px;
+        top: calc(var(--font-size-ratio) * (-10));
         left: 0px;
         transform: translateX(0);
         font: 12px/12px 'Roboto';
+        font-size: calc(12 * var(--font-size-ratio));
+        line-height: calc(12 * var(--font-size-ratio));
+        font-family: var(--sedatalist-font-family, 'Roboto', sans-serif);
       }
       .none {
         display: none;
