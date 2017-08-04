@@ -10,6 +10,15 @@
     <script src="../../web-component-tester/browser.js"></script>
 
     <link rel="import" href="../se-datalist.html">
+    <style>
+      .test-datalist {
+        --sedatalist-font-size: 32px;
+        --sedatalist-font-family: 'Comic Sans';
+        --sedatalist-bottom-line: 2px dashed red;
+        --sedatalist-text-color: orange;
+        --sedatalist-placeholder-color: blue;
+      }
+    </style>
   </head>
   <body>
 
@@ -34,6 +43,12 @@
     <test-fixture id="ListManipulationFixture">
       <template>
         <se-datalist></se-datalist>
+      </template>
+    </test-fixture>
+
+    <test-fixture id="StylingFixture">
+      <template>
+        <se-datalist class="test-datalist"></se-datalist>
       </template>
     </test-fixture>
 
@@ -118,6 +133,15 @@
           assert.equal(element._element.value, 'Third option', 'testing list property readOnly');
           element.addOptions(['Third option', 'aaa']);
           assert.sameMembers(element.list, ['Third option', 'Fifth option', 'aaa'], "Already existed in list option shouldn't duplicate");
+        });
+        test('manipulating of options list', function() {
+          let element = fixture('StylingFixture');
+          element.addOptions(['First option', 'Second option', 'Third option']);
+          assert.equal(getComputedStyle(element._element).fontFamily, '"Comic Sans"', 'check font family');
+          assert.equal(getComputedStyle(element._element).fontSize, '32px', 'check font size');
+          assert.equal(getComputedStyle(element._element).borderBottom, '2px dashed rgb(255, 0, 0)', 'check bottom border');
+          assert.equal(getComputedStyle(element._element).color, 'rgb(255, 165, 0)', 'check main color');
+          assert.equal(getComputedStyle(element._label).color, 'rgb(0, 0, 255)', 'check placeholder color');
         });
       });
     </script>

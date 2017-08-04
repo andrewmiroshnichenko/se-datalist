@@ -41,7 +41,7 @@ List of the component options. Empty by default, read-only. All manipulations wi
       var customEl = document.querySelector('se-datalist');
       customEl.list = ['1', '2', 'coconut'];
       customEl.list;  // returns empty Array, because list property is read-only 
-      customEl.addOptions(['a', 'b']);'
+      customEl.addOptions(['a', 'b']);
       customEl.list;  // returns Array ['a', 'b']
       customEl.removeOptions(['a']);
       customEl.list;  // returns Array ['b']
