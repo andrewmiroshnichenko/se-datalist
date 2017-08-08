@@ -1,7 +1,7 @@
 [![Published on webcomponents.org](https://img.shields.io/badge/webcomponents.org-published-blue.svg)](https://www.webcomponents.org/element/andrewmiroshnichenko/se-datalist)
 # se-datalist
 
-Polymer wrapper around native **select** and **datalist** tags with browser-dependent appearance. If brower don't support **datalist** tag it will fall back to **select** which is supported fairly well. Note that all bugs, that are belong to native **datalist** tag will appear on this custom element as well, since it just refer to general tag support.
+Polymer wrapper around native **select** and **datalist** tags with browser-dependent appearance. If browser don't support **datalist** tag it will fall back to **select** which is supported fairly well. Note that all bugs, that are belong to native **datalist** tag will appear on this custom element as well, since it just refer to general tag support.
 
 ## Install
 ```
@@ -21,7 +21,9 @@ $ polymer serve
 $ polymer test
 ```
 # API
-##Component have five public properties.
+
+## Properties
+
 1. List
 
 |                             |         |
@@ -89,7 +91,7 @@ String that is shown as component’s placeholder when component’s value is em
       var customEl = document.querySelector('se-datalist');
       customEl.placeholder; // returns String ''
       customEl.placeholder = 'Select an option';
-      customEl.placeholder; // returns String 'hh:mm'
+      customEl.placeholder; // returns String 'Select an option'
  ```
  4. Selected option
 
@@ -101,8 +103,10 @@ String that is shown as component’s placeholder when component’s value is em
 | **Can be set from html**    | No             |
 | **Corresponding attribute** |                |
 |                             |                |
+
 Current option that is selected as component’s value. Can't be set from HTML because we can't set list from there. On attempt to set non-existing (in `list` property) selected option this property will be set to empty Sring if `list` property is empty or if no option is selected yet. If some selected option was already selected - it will remain as `selectedOption` property value.
-If current `selectedOption` will removed from `list` - first option in list become selected. If all options will be removed, `selectedOption` become empty.
+If current `selectedOption` will removed from `list` - `selectedOption` will become empty.
+
 ```html
       <se-datalist></se-datalist>
 ```
@@ -112,9 +116,9 @@ If current `selectedOption` will removed from `list` - first option in list beco
       customEl.selectedOption = 'Two';
       customEl.selectedOption; // returns String 'Two'
       customEl.removeOptions(['Two']);
-      customEl.selectedOption; // returns String 'One'
+      customEl.selectedOption; // returns String ''
       customEl.selectedOption = 'Four';
-      customEl.selectedOption; // returns String 'One'
+      customEl.selectedOption; // returns String ''
       customEl.removeOptions(['One', 'Three']);
       customEl.selectedOption; // returns String ''
  ```
@@ -128,13 +132,14 @@ If current `selectedOption` will removed from `list` - first option in list beco
 | **Can be set from html**    | Yes            |
 | **Corresponding attribute** | is-select      |
 |                             |                |
+
 With this property set to **true** component will initialize as **select** even if **datalist** is available in current browser. In order to achieve this behavior you should set it upon initialization as attribute of `se-datalist` tag.
 ```html
       <se-datalist is-select></se-datalist>
 ```
 ## Methods
 
-### addOptions(optionsList: *Array*) => *void*/*false*
+### addOptions(optionsList: *Array*) => *void* or *false*
 This method accepts array of options, and populates the component’s list property. If option from `optionsList` isn't already present in `list` - component will add it to the end of `list`, and if it's duplicate of existing option - method will return `false`.
 ```html
       <se-datalist></se-datalist>
@@ -148,7 +153,7 @@ This method accepts array of options, and populates the component’s list prope
       customEl.addOptions(['Four', 'Five']);  // returns Boolean 'false' on adding option 'Four'
       customEl.list; // returns Array ['One', 'Two', 'Three', 'Four', 'Five']
 ```
-### removeOptions(optionsList: *Array*) => *void*
+### removeOptions(optionsList: *Array*) => *void* or *false*
 This method accepts array of options, and removes them from the component’s list property. If option from `optionsList` isn't already present in `list` - method will return `false`, and if it's existing option - component will remove it from `list`.
 ```html
       <se-datalist></se-datalist>
@@ -162,7 +167,7 @@ This method accepts array of options, and removes them from the component’s li
       customEl.removeOptions(['Four']); // returns Boolean 'false' on adding option 'Four'
       customEl.list; // returns Array ['One', 'Three']
       customEl.addOptions(['One', 'Three']);
-      customEl.list; // returns Array []
+      customEl.list; // returns empty Array
 ```
 ### removeAllOptions() => *void*
 Completely removes all options from the component’s `list` property.

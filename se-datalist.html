@@ -194,10 +194,7 @@
           } else {
             return false;
           }
-          if (this.list.length && this.selectedOption === option) {
-            this.selectedOption = this.list[0];
-            this._boundSetInputValueProp({target: {value: this.list[0]}});
-          } else if (!this.list.length && this.selectedOption === option) {
+          if (this.selectedOption === option) {
             this.selectedOption = '';
             this._boundSetInputValueProp({target: {value: ''}});
           }

@@ -134,7 +134,8 @@
           element.addOptions(['Third option', 'aaa']);
           assert.sameMembers(element.list, ['Third option', 'Fifth option', 'aaa'], "Already existed in list option shouldn't duplicate");
         });
-        test('manipulating of options list', function() {
+
+        test('manipulating of styles', function() {
           let element = fixture('StylingFixture');
           element.addOptions(['First option', 'Second option', 'Third option']);
           assert.equal(getComputedStyle(element._element).fontFamily, '"Comic Sans"', 'check font family');
