@@ -38,7 +38,13 @@
     </div>
     <script>
       var customEl = document.querySelector('se-datalist');
+      customEl.addEventListener('listChanged', function(event) {
+        console.log(event.detail.newValue, event.detail.oldValue);
+      });
+
       customEl.addOptions(['First option', 'Second option', 'Third option']);
+      customEl.addOptions(['First option', 'Second option', 'Third option']);
+      customEl.addOptions(['Fourth option']);
     // setTimeout(function() {
       
     //   console.log(customEl);

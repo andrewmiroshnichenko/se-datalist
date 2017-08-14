@@ -104,8 +104,9 @@
           },
           list: {
             type: Array,
-            value: [],
-            readOnly: true
+            value: () => [],
+            readOnly: true,
+            observer: '_listObserver'
           },
           selectedOption: {
             type: String,
@@ -177,17 +178,26 @@
         this._element.removeEventListener('input', this._boundSetInputValueProp);
       }
       addOptions(optionsArray) {
-        optionsArray.forEach(function(option) {
+        let oldArr = [];
+        this.list.map((value, i) => {
+          oldArr[i] = value;
+        });
+        optionsArray.forEach((option) => {
           let index = this.list.indexOf(option);
           if (index === -1) {
             this.push('list', option);
           } else {
             return false;
           }
-        }.bind(this));
+        });
+        console.log(oldArr, this.list);
       }
       removeOptions(optionsArray) {
-        optionsArray.forEach(function(option) {
+        let oldArr = [];
+        this.list.map((value, i) => {
+          oldArr[i] = value;
+        });
+        optionsArray.forEach((option) => {
           let index = this.list.indexOf(option);
           if (index !== -1) {
             this.splice('list', index, 1);
@@ -198,7 +208,7 @@
             this.selectedOption = '';
             this._boundSetInputValueProp({target: {value: ''}});
           }
-        }.bind(this));
+        });
       }
       removeAllOptions() {
         while (this.list.length) {
@@ -231,6 +241,7 @@
           this.selectedOption = '';
           this._boundSetInputValueProp({target: {value: ''}});
         }
+        this.dispatchEvent(new CustomEvent('valueChanged', {bubbles: true, composed: true, detail: {newValue: newValue, oldValue: oldValue}}));
       }
       _listAndSelectedOptionObserver(list, selectedOption) {
         if (this.list && this.list.length) {
@@ -268,6 +279,9 @@
         } else if (oldValue && !newValue) {
           this._label.classList.remove('animate-placeholder-out');
         }
+      }
+      _listObserver(newValue, oldValue) {
+        this.dispatchEvent(new CustomEvent('listChanged', {bubbles: true, composed: true, detail: {newValue: newValue, oldValue: oldValue}}));
       }
     }
     window.customElements.define(SeDatalist.is, SeDatalist);

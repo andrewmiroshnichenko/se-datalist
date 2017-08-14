@@ -181,6 +181,7 @@ Completely removes all options from the component’s `list` property.
       customEl.removeAllOptions();
       customEl.list; // returns Array []
 ```
+
 ## Styling
 
 The following custom properties are available for styling:
@@ -192,3 +193,13 @@ The following custom properties are available for styling:
 | `--sedatalist-placeholder-color` | Color of placeholder text                                           | `#999999`                      |
 | `--sedatalist-font-size`         | Charachters font size. Component dimesions will scale accordingly   | `16px`                         |
 | `--sedatalist-font-family`       | Font family of component typography                                 | `Roboto, sans-serif`           |
+
+## Events
+
+valueChanged(event)
+Event is fired when new option from list is chosen.
+New value is accessible as `event.detail.newValue`, old value - `as event.detail.oldValue`.
+
+listChanged(event)
+Event is fired when list is changed(options are either added or removed).
+New list is accessible as `event.detail.newList`, old value - `as event.detail.oldList`.

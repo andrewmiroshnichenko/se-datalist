@@ -52,13 +52,19 @@
       </template>
     </test-fixture>
 
+    <test-fixture id="EventFixture">
+      <template>
+        <se-datalist class="test-datalist"></se-datalist>
+      </template>
+    </test-fixture>
+
     <script>
       suite('se-datalist', function() {
 
         test('use of declarative syntax for element properties', function() {
           let element = fixture('DeclarativePropertySetFixture');
           element.addOptions(['First option', 'Second option', 'Third option']);
-          assert.sameMembers(element.list, ['First option', 'Second option', 'Third option']);
+          assert.sameMembers(element.list, ['First option', 'Second option', 'Third option'], 'new options added correctly - 1');
           assert.equal(element.placeholder, 'Choose an option');
           assert.equal(element.disabled, true);
         });
@@ -69,7 +75,7 @@
           element.selectedOption = 'First option';
           element.disabled = true;
           element.placeholder = 'Choose an option';
-          assert.sameMembers(element.list, ['First option', 'Second option', 'Third option']);
+          assert.sameMembers(element.list, ['First option', 'Second option', 'Third option'], 'new options added correctly - 2');
           assert.equal(element.selectedOption, 'First option');
           assert.equal(element.disabled, true);
           assert.equal(element.placeholder, 'Choose an option');
@@ -120,17 +126,17 @@
           assert.equal(element.selectedOption, 'Second option', 'check updated selected option - 2');
           assert.equal(element._element.value, 'Second option', 'check updated selected option - 2');
           element.removeOptions(['Second option']);
-          assert.equal(element.selectedOption, 'First option', 'check new selected option if old selected option was removed from list - 1');
-          assert.equal(element._element.value, 'First option', 'check new selected option if old selected option was removed from list - 1');
+          assert.equal(element.selectedOption, '', 'check new selected option if old selected option was removed from list - 1');
+          assert.equal(element._element.value, '', 'check new selected option if old selected option was removed from list - 1');
           assert.sameMembers(element.list, ['First option', 'Third option', 'Fifth option'], 'check option removal - 1');
           element.removeOptions(['First option']);
           assert.sameMembers(element.list, ['Third option', 'Fifth option'], 'check option removal - 2');
-          assert.equal(element.selectedOption, 'Third option', 'check new selected option if old selected option was removed from list - 2');
-          assert.equal(element._element.value, 'Third option', 'check new selected option if old selected option was removed from list - 2');
+          assert.equal(element.selectedOption, '', 'check new selected option if old selected option was removed from list - 2');
+          assert.equal(element._element.value, '', 'check new selected option if old selected option was removed from list - 2');
           element.list = [];
           assert.sameMembers(element.list, ['Third option', 'Fifth option'], 'testing list property readOnly');
-          assert.equal(element.selectedOption, 'Third option', 'testing list property readOnly');
-          assert.equal(element._element.value, 'Third option', 'testing list property readOnly');
+          assert.equal(element.selectedOption, '', 'testing list property readOnly');
+          assert.equal(element._element.value, '', 'testing list property readOnly');
           element.addOptions(['Third option', 'aaa']);
           assert.sameMembers(element.list, ['Third option', 'Fifth option', 'aaa'], "Already existed in list option shouldn't duplicate");
         });
@@ -143,6 +149,18 @@
           assert.equal(getComputedStyle(element._element).borderBottom, '2px dashed rgb(255, 0, 0)', 'check bottom border');
           assert.equal(getComputedStyle(element._element).color, 'rgb(255, 165, 0)', 'check main color');
           assert.equal(getComputedStyle(element._label).color, 'rgb(0, 0, 255)', 'check placeholder color');
+        });
+        test('checking for event', function() {
+          let element = fixture('EventFixture');
+          let spyValue = sinon.spy();
+          let spyList = sinon.spy();
+          element.addEventListener('valueChanged', spyValue);
+          element.addEventListener('listChanged', spyList);
+          element._selectedOptionObserver('First', 'Second');
+          assert.propertyVal(spyValue.args[0][0]['detail'], 'newValue', 'First', 'value spy called with correct argument');
+          assert.propertyVal(spyValue.args[0][0]['detail'], 'oldValue', 'Second', 'value spy called with correct argument');
+          element._listObserver(['First', 'Second'], undefined);
+          assert.sameMembers(spyList.args[0][0]['detail']['newValue'], ['First', 'Second'], 'list spy called with correct argument');
         });
       });
     </script>
